@@ -9,8 +9,7 @@ today = time.localtime(time.time())
 print('Now:', time.asctime(today))
 
 print('Launching Browser')
-driver_path = '/Users/reekystive/Workspace/bin/chromedriver'
-browser = webdriver.Chrome(driver_path)
+browser = webdriver.Chrome(config.driver_path)
 browser.set_window_size(480, 720)
 
 print('Logging in')
@@ -73,7 +72,16 @@ except IndexError:
 
 yes_button = browser.find_elements_by_class_name('f-btn-text')[2]
 yes_button.click()
-time.sleep(1.5)
+time.sleep(1)
+
+for i in range(100):
+    time.sleep(3)
+    try:
+        browser.find_element_by_class_name('f-messagebox-message')
+    except exceptions.NoSuchElementException:
+        print('Waiting')
+        continue
+    break
 
 try:
     browser.find_element_by_class_name('f-messagebox-message')
