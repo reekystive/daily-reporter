@@ -6,34 +6,36 @@ from numpy.random import normal
 import requests
 import time
 import config
+import strings
 import re
-
-wechat_url = 'https://sc.ftqq.com/' + config.sckey + '.send'
 
 
 def send_wechat(msg):
-    send_url = wechat_url + '?text=' + msg
-    response = requests.get(send_url)
+    wechat_url = 'http://wxpusher.zjiecode.com/api/send/message/'
+    wechat_url += '?appToken=' + config.app_token
+    wechat_url += '&content=' + msg
+    wechat_url += '&uid=' + config.uid
+    response = requests.get(wechat_url)
 
 
 today = time.localtime(time.time())
-print('Now:', time.asctime(today))
+print('[Info]', 'Now:', time.asctime(today))
 
 chrome_options = options.Options()
 if config.headless:
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
 
-print('Launching Browser')
+print('[Info] Launching Browser')
 if (config.driver_path != 'auto'):
     browser = webdriver.Chrome(
-        config.driver_path, chrome_options=chrome_options)
+        config.driver_path, options=chrome_options)
 else:
-    browser = webdriver.Chrome(chrome_options=chrome_options)
+    browser = webdriver.Chrome(options=chrome_options)
 
 browser.set_window_size(480, 720)
 
-print('Logging in')
+print('[Info] Logging in')
 browser.get('https://id.sspu.edu.cn/cas/login')
 time.sleep(1)
 
@@ -50,22 +52,22 @@ time.sleep(1)
 try:
     browser.find_element_by_class_name('success')
 except exceptions.NoSuchElementException:
-    print('Login failed')
-    send_wechat('Login_Failed')
+    print('[Error] Login failed')
+    send_wechat(strings.get_msg_failed())
     browser.quit()
     quit(1)
 
-print('Login success')
+print('[Info] Login success')
 time.sleep(0.5)
 
-print('Jumping to HSM page')
+print('[Info] Jumping to HSM page')
 browser.get('https://hsm.sspu.edu.cn/selfreport/Default.aspx')
 time.sleep(0.5)
-print('Jumping to Daily Report page')
+print('[Info] Jumping to Daily Report page')
 browser.get('https://hsm.sspu.edu.cn/selfreport/DayReport.aspx')
 time.sleep(1)
 
-print('Starting auto fill')
+print('[Info] Starting auto fill')
 
 min_value = int(config.min_temperature * 10)
 max_value = int(config.max_temperature * 10)
@@ -77,7 +79,7 @@ temperature = int(normal(loc=loc, scale=scale)) / 10
 if int(temperature * 10) < min_value or int(temperature * 10) > max_value:
     temperature = randint(min_value, max_value) / 10
 
-print('Auto generated temperature:', temperature)
+print('[Info] Auto generated temperature:', temperature)
 temperature_box = browser.find_element_by_id('p1_TiWen-inputEl')
 temperature_box.clear()
 temperature_box.send_keys(str(temperature))
@@ -99,8 +101,8 @@ time.sleep(1)
 try:
     browser.find_element_by_id('fineui_27')
 except IndexError:
-    print('Submit failed')
-    send_wechat('Submit_Failed')
+    print('[Error] Submit failed')
+    send_wechat(strings.get_msg_failed())
     browser.quit()
     quit(0)
 
@@ -109,24 +111,25 @@ yes_button_1 = browser.find_element_by_id('fineui_27') \
 yes_button_1.click()
 time.sleep(1)
 
-for i in range(100):
+for i in range(int(config.timeout / 3)):
     time.sleep(3)
     try:
         browser.find_element_by_id('fineui_32')
     except exceptions.NoSuchElementException:
-        print('Waiting')
+        print('[Info] Waiting: ' + str(i * 3) +
+              ' / ' + str(config.timeout) + ' seconds')
         continue
     break
 
 try:
     browser.find_element_by_id('fineui_32')
 except exceptions.NoSuchElementException:
-    print('Submit timeout')
-    send_wechat('Submit_Timeout')
+    print('[Error] Submit timeout')
+    send_wechat(strings.get_msg_failed())
     browser.quit()
     quit(0)
 
-print('Reported successfully')
+print('[Info] Reported successfully')
 
 yes_button_2 = browser.find_element_by_id('fineui_32') \
     .find_element_by_id('fineui_34') \
@@ -141,22 +144,25 @@ txt = browser.find_element_by_id('Panel1_DataList1') \
     .find_element_by_class_name('f-datalist-list') \
     .find_elements_by_class_name('f-datalist-item-inner')[0].text
 
-datas = re.match(r'^(\d+)-(\d+)-(\d+)\(.*?(\d+).*?\)$', txt)
-
-if datas == None:
-    print('Check failed')
-    send_wechat('Check_Failed')
+if txt.find(strings.msg['success_msg']) == -1:
+    print('[Error] Check failed')
+    send_wechat(strings.get_msg_failed())
     browser.quit()
-    quit(0)
+    quit(1)
 
-res_date = datas.group(1) + '-' + datas.group(2) + '-' + datas.group(3)
-res_date_wechat = datas.group(1) + '.' + datas.group(2) + '.' + datas.group(3)
-rank = int(datas.group(4))
+if re.match(r'^(\d+)-(\d+)-(\d+)\(.*?(\d+).*?\)$', txt) != None:
+    datas = re.match(r'^(\d+)-(\d+)-(\d+)\(.*?(\d+).*?\)$', txt)
+    rank = int(datas.group(4))
+else:
+    print('[Warring] Check rank failed')
+    datas = re.match(r'^(\d+)-(\d+)-(\d+)\(.*?\)$', txt)
+    rank = None
 
-print('Date: ' + res_date + ', Rank: ' + str(rank))
-send_wechat('Successfully' + '_' + res_date_wechat +
-            '_' + str(temperature) + '_' + str(rank))
+date = datas.group(1) + '-' + datas.group(2) + '-' + datas.group(3)
+
+print('[Info] ' + 'Date: ' + date + ', Rank: ' + str(rank))
+send_wechat(strings.get_msg_success(date, rank, temperature))
 time.sleep(1)
 
 browser.quit()
-print('Browser closed')
+print('[Info] Browser closed')

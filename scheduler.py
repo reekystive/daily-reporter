@@ -11,7 +11,6 @@ def job():
 
 schedule.every().day.at('00:30').do(job)
 schedule.every().day.at('07:30').do(job)
-schedule.every().day.at('13:30').do(job)
 
 print('Started scheduler')
 
