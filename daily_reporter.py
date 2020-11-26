@@ -6,6 +6,7 @@ from numpy.random import normal
 import requests
 import time
 import config
+import re
 
 wechat_url = 'https://sc.ftqq.com/' + config.sckey + '.send'
 
@@ -90,8 +91,8 @@ condition_good = browser.find_element_by_id('fineui_2-inputEl-icon')
 condition_good.click()
 time.sleep(0.5)
 
-submit_button = browser.find_element_by_id('p1_ctl00')
-submit_button = submit_button.find_element_by_id('p1_ctl00_btnSubmit')
+submit_button = browser.find_element_by_id('p1_ctl00') \
+    .find_element_by_id('p1_ctl00_btnSubmit')
 submit_button.click()
 time.sleep(1)
 
@@ -103,8 +104,8 @@ except IndexError:
     browser.quit()
     quit(0)
 
-yes_button_1 = browser.find_element_by_id('fineui_27')
-yes_button_1 = yes_button_1.find_element_by_id('fineui_30')
+yes_button_1 = browser.find_element_by_id('fineui_27') \
+    .find_element_by_id('fineui_30')
 yes_button_1.click()
 time.sleep(1)
 
@@ -126,12 +127,28 @@ except exceptions.NoSuchElementException:
     quit(0)
 
 print('Reported successfully')
-send_wechat('Reported_Successfully_' + str(temperature))
 
-yes_button_2 = browser.find_element_by_id('fineui_32')
-yes_button_2 = yes_button_2.find_element_by_id('fineui_34')
-yes_button_2 = yes_button_2.find_element_by_id('fineui_35')
+yes_button_2 = browser.find_element_by_id('fineui_32') \
+    .find_element_by_id('fineui_34') \
+    .find_element_by_id('fineui_35')
 yes_button_2.click()
+time.sleep(1)
+
+browser.get('https://hsm.sspu.edu.cn/selfreport/ReportHistory.aspx')
+time.sleep(1)
+
+txt = browser.find_element_by_id('Panel1_DataList1') \
+    .find_element_by_class_name('f-datalist-list') \
+    .find_elements_by_class_name('f-datalist-item-inner')[0].text
+
+datas = re.match(r'^(\d+)-(\d+)-(\d+).*?(\d+).*?$', txt)
+res_date = datas.group(1) + '-' + datas.group(2) + '-' + datas.group(3)
+res_date_wechat = datas.group(1) + '.' + datas.group(2) + '.' + datas.group(3)
+rank = int(datas.group(4))
+
+print('Date: ' + res_date + ', Rank: ' + str(rank))
+send_wechat('Successfully' + '_' + res_date_wechat +
+            '_' + str(temperature) + '_' + str(rank))
 time.sleep(1)
 
 browser.quit()
