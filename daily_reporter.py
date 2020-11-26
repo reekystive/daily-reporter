@@ -178,11 +178,16 @@ def report(user_index):
     print('[Info] Browser closed')
 
 
-print('[Info] Task started\n')
+def run():
+    print('[Info] Task started\n')
 
-for user_index in range(len(config.users)):
-    report(user_index)
-    print()
-    time.sleep(5)
+    for user_index in range(len(config.users)):
+        report(user_index)
+        print()
+        time.sleep(5)
 
-print('[Info] Task done')
+    print('[Info] Task done')
+
+
+if __name__ == '__main__':
+    run()

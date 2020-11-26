@@ -1,18 +1,18 @@
-import os
 import time
 import schedule
+import daily_reporter as reporter
 
 
 def job():
-    print('Starting job...')
-    os.system("python3 ./daily_reporter.py")
-    print('Job done\n')
+    print('[Info] Starting scheduled job')
+    reporter.run()
+    print('[Info] Scheduled job done\n')
 
 
 schedule.every().day.at('00:30').do(job)
 schedule.every().day.at('07:30').do(job)
 
-print('Started scheduler')
+print('[Info] Started scheduler')
 
 while True:
     schedule.run_pending()
