@@ -141,7 +141,14 @@ txt = browser.find_element_by_id('Panel1_DataList1') \
     .find_element_by_class_name('f-datalist-list') \
     .find_elements_by_class_name('f-datalist-item-inner')[0].text
 
-datas = re.match(r'^(\d+)-(\d+)-(\d+).*?(\d+).*?$', txt)
+datas = re.match(r'^(\d+)-(\d+)-(\d+)\(.*?(\d+).*?\)$', txt)
+
+if datas == None:
+    print('Check failed')
+    send_wechat('Check_Failed')
+    browser.quit()
+    quit(0)
+
 res_date = datas.group(1) + '-' + datas.group(2) + '-' + datas.group(3)
 res_date_wechat = datas.group(1) + '.' + datas.group(2) + '.' + datas.group(3)
 rank = int(datas.group(4))
