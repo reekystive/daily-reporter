@@ -15,7 +15,7 @@ def send_wechat(user_index, msg):
     wechat_url += '?appToken=' + config.app_token
     wechat_url += '&content=' + msg
     wechat_url += '&uid=' + config.users[user_index]['uid']
-    response = requests.get(wechat_url)
+    requests.get(wechat_url)
 
 
 def report(user_index):
@@ -57,7 +57,8 @@ def report(user_index):
         browser.find_element_by_class_name('success')
     except exceptions.NoSuchElementException:
         print('[Error] Login failed')
-        send_wechat(user_index, strings.get_msg_failed(user_index))
+        if config.users[user_index]['use_wechat']:
+            send_wechat(user_index, strings.get_msg_failed(user_index))
         browser.quit()
         quit(1)
 
@@ -106,7 +107,8 @@ def report(user_index):
         browser.find_element_by_id('fineui_27')
     except IndexError:
         print('[Error] Submit failed')
-        send_wechat(user_index, strings.get_msg_failed(user_index))
+        if config.users[user_index]['use_wechat']:
+            send_wechat(user_index, strings.get_msg_failed(user_index))
         browser.quit()
         quit(0)
 
@@ -129,7 +131,8 @@ def report(user_index):
         browser.find_element_by_id('fineui_32')
     except exceptions.NoSuchElementException:
         print('[Error] Submit timeout')
-        send_wechat(user_index, strings.get_msg_failed(user_index))
+        if config.users[user_index]['use_wechat']:
+            send_wechat(user_index, strings.get_msg_failed(user_index))
         browser.quit()
         quit(0)
 
@@ -150,7 +153,8 @@ def report(user_index):
 
     if txt.find(strings.msg['success_msg']) == -1:
         print('[Error] Check failed')
-        send_wechat(user_index, strings.get_msg_failed(user_index))
+        if config.users[user_index]['use_wechat']:
+            send_wechat(user_index, strings.get_msg_failed(user_index))
         browser.quit()
         quit(1)
 
@@ -165,8 +169,9 @@ def report(user_index):
     date = datas.group(1) + '-' + datas.group(2) + '-' + datas.group(3)
 
     print('[Info] ' + 'Date: ' + date + ', Rank: ' + str(rank))
-    send_wechat(user_index, strings.get_msg_success(
-        user_index, date, rank, temperature))
+    if config.users[user_index]['use_wechat']:
+        send_wechat(user_index, strings.get_msg_success(
+            user_index, date, rank, temperature))
     time.sleep(1)
 
     browser.quit()
