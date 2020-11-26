@@ -19,10 +19,10 @@ msg['failed_time'] = '失败时间：'
 msg['success_msg'] = '已填报'
 
 
-def get_msg_success(date, rank, temp):
+def get_msg_success(user_index, date, rank, temp):
     now = time.localtime(time.time())
     res = msg['success'] + '%0a' + '%0a'
-    res += msg['number'] + str(config.username) + '%0a'
+    res += msg['number'] + str(config.users[user_index]['username']) + '%0a'
     res += msg['date'] + date + '%0a'
     res += msg['time'] + str(now[3]) + ':' + str(now[4]) + '%0a'
     res += msg['rank'] + str(rank) + '%0a'
@@ -30,10 +30,10 @@ def get_msg_success(date, rank, temp):
     return res
 
 
-def get_msg_failed():
+def get_msg_failed(user_index):
     now = time.localtime(time.time())
     res = msg['failed_msg'] + '%0a' + '%0a'
-    res += msg['number'] + str(config.username) + '%0a'
+    res += msg['number'] + str(config.users[user_index]['username']) + '%0a'
     res += msg['date'] + str(now[0]) + '-' + \
         str(now[1]) + '-' + str(now[2]) + '%0a'
     res += msg['failed_time'] + str(now[3]) + ':' + str(now[4])
