@@ -1,15 +1,35 @@
 from selenium import webdriver
 from selenium.common import exceptions
+from selenium.webdriver.chrome import options
 from random import randint
 from numpy.random import normal
+import requests
 import time
 import config
+
+wechat_url = 'https://sc.ftqq.com/' + config.sckey + '.send'
+
+
+def send_wechat(msg):
+    send_url = wechat_url + '?text=' + msg
+    response = requests.get(send_url)
+
 
 today = time.localtime(time.time())
 print('Now:', time.asctime(today))
 
+chrome_options = options.Options()
+if config.headless:
+    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--disable-gpu')
+
 print('Launching Browser')
-browser = webdriver.Chrome(config.driver_path)
+if (config.driver_path != 'auto'):
+    browser = webdriver.Chrome(
+        config.driver_path, chrome_options=chrome_options)
+else:
+    browser = webdriver.Chrome(chrome_options=chrome_options)
+
 browser.set_window_size(480, 720)
 
 print('Logging in')
@@ -30,16 +50,19 @@ try:
     browser.find_element_by_class_name('success')
 except exceptions.NoSuchElementException:
     print('Login failed')
-    browser.close()
-    quit()
+    send_wechat('Login_Failed')
+    browser.quit()
+    quit(1)
 
 print('Login success')
+time.sleep(0.5)
 
 print('Jumping to HSM page')
 browser.get('https://hsm.sspu.edu.cn/selfreport/Default.aspx')
 time.sleep(0.5)
 print('Jumping to Daily Report page')
 browser.get('https://hsm.sspu.edu.cn/selfreport/DayReport.aspx')
+time.sleep(1)
 
 print('Starting auto fill')
 
@@ -57,41 +80,59 @@ print('Auto generated temperature:', temperature)
 temperature_box = browser.find_element_by_id('p1_TiWen-inputEl')
 temperature_box.clear()
 temperature_box.send_keys(str(temperature))
-time.sleep(1)
+time.sleep(0.5)
 
-submit_button = browser.find_elements_by_class_name('f-btn-text')[0]
+agree_box = browser.find_element_by_id('p1_ChengNuo-inputEl-icon')
+agree_box.click()
+time.sleep(0.5)
+
+condition_good = browser.find_element_by_id('fineui_2-inputEl-icon')
+condition_good.click()
+time.sleep(0.5)
+
+submit_button = browser.find_element_by_id('p1_ctl00')
+submit_button = submit_button.find_element_by_id('p1_ctl00_btnSubmit')
 submit_button.click()
 time.sleep(1)
 
 try:
-    browser.find_elements_by_class_name('f-btn-text')[2]
+    browser.find_element_by_id('fineui_27')
 except IndexError:
     print('Submit failed')
-    browser.close()
-    quit()
+    send_wechat('Submit_Failed')
+    browser.quit()
+    quit(0)
 
-yes_button = browser.find_elements_by_class_name('f-btn-text')[2]
-yes_button.click()
+yes_button_1 = browser.find_element_by_id('fineui_27')
+yes_button_1 = yes_button_1.find_element_by_id('fineui_30')
+yes_button_1.click()
 time.sleep(1)
 
 for i in range(100):
     time.sleep(3)
     try:
-        browser.find_element_by_class_name('f-messagebox-message')
+        browser.find_element_by_id('fineui_32')
     except exceptions.NoSuchElementException:
         print('Waiting')
         continue
     break
 
 try:
-    browser.find_element_by_class_name('f-messagebox-message')
+    browser.find_element_by_id('fineui_32')
 except exceptions.NoSuchElementException:
-    print('Submit failed')
-    browser.close()
-    quit()
+    print('Submit timeout')
+    send_wechat('Submit_Timeout')
+    browser.quit()
+    quit(0)
 
-print('Congratulations! You have reported successfully!')
+print('Reported successfully')
+send_wechat('Reported_Successfully_' + str(temperature))
+
+yes_button_2 = browser.find_element_by_id('fineui_32')
+yes_button_2 = yes_button_2.find_element_by_id('fineui_34')
+yes_button_2 = yes_button_2.find_element_by_id('fineui_35')
+yes_button_2.click()
 time.sleep(1)
 
-browser.close()
+browser.quit()
 print('Browser closed')
