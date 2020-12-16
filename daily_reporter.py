@@ -60,7 +60,7 @@ def report(user_index):
         if config.users[user_index]['use_wechat']:
             send_wechat(user_index, strings.get_msg_failed(user_index))
         browser.quit()
-        quit(1)
+        return 1
 
     print('[Info] Login success')
     time.sleep(0.5)
@@ -110,7 +110,7 @@ def report(user_index):
         if config.users[user_index]['use_wechat']:
             send_wechat(user_index, strings.get_msg_failed(user_index))
         browser.quit()
-        quit(0)
+        return 1
 
     yes_button_1 = browser.find_element_by_id('fineui_27') \
         .find_element_by_id('fineui_30')
@@ -134,7 +134,7 @@ def report(user_index):
         if config.users[user_index]['use_wechat']:
             send_wechat(user_index, strings.get_msg_failed(user_index))
         browser.quit()
-        quit(0)
+        return 1
 
     print('[Info] Reported successfully')
 
@@ -156,7 +156,7 @@ def report(user_index):
         if config.users[user_index]['use_wechat']:
             send_wechat(user_index, strings.get_msg_failed(user_index))
         browser.quit()
-        quit(1)
+        return 1
 
     if re.match(r'^(\d+)-(\d+)-(\d+)\(.*?(\d+).*?\)$', txt) != None:
         datas = re.match(r'^(\d+)-(\d+)-(\d+)\(.*?(\d+).*?\)$', txt)
@@ -176,13 +176,18 @@ def report(user_index):
 
     browser.quit()
     print('[Info] Browser closed')
+    return 0
 
 
 def run():
     print('[Info] Task started\n')
 
     for user_index in range(len(config.users)):
-        report(user_index)
+        for i in range(5):
+            print('[Info] Trying # ' + str(i + 1))
+            res = report(user_index)
+            if res == 0:
+                break
         print()
         time.sleep(5)
 
