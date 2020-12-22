@@ -10,6 +10,7 @@ Support WeChat push, multi-user, scheduled auto report
   - Install `numpy`
   - Install `selenium`
   - Install `schedule`
+  - Install `requests`
 - Install `Chrome`
   - Download `Chrome WebDriver` and add it to `Path`
 - Edit `config.py`
