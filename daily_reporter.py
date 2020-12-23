@@ -68,6 +68,7 @@ def report(user_index):
     print('[Info] Jumping to HSM page')
     browser.get('https://hsm.sspu.edu.cn/selfreport/Default.aspx')
     time.sleep(0.5)
+
     print('[Info] Jumping to Daily Report page')
     browser.get('https://hsm.sspu.edu.cn/selfreport/DayReport.aspx')
     time.sleep(1)
@@ -80,11 +81,11 @@ def report(user_index):
     loc = int((min_value + max_value) / 2)
     scale = max_value - loc
     temperature = int(normal(loc=loc, scale=scale)) / 10
-
     if int(temperature * 10) < min_value or int(temperature * 10) > max_value:
         temperature = randint(min_value, max_value) / 10
 
     print('[Info] Auto generated temperature:', temperature)
+
     temperature_box = browser.find_element_by_id('p1_TiWen-inputEl')
     temperature_box.clear()
     temperature_box.send_keys(str(temperature))
@@ -94,7 +95,8 @@ def report(user_index):
     agree_box.click()
     time.sleep(0.5)
 
-    condition_good = browser.find_element_by_id('fineui_2-inputEl-icon')
+    condition_good = browser.find_element_by_id('p1_DangQSTZK') \
+        .find_element_by_id('fineui_2-inputEl-icon')
     condition_good.click()
     time.sleep(0.5)
 
@@ -112,15 +114,16 @@ def report(user_index):
         browser.quit()
         return 1
 
-    yes_button_1 = browser.find_element_by_id('fineui_27') \
-        .find_element_by_id('fineui_30')
+    yes_button_1 = browser.find_element_by_id('fineui_34') \
+        .find_element_by_id('fineui_36') \
+        .find_element_by_id('fineui_37')
     yes_button_1.click()
     time.sleep(1)
 
     for i in range(int(config.timeout / 3)):
         time.sleep(3)
         try:
-            browser.find_element_by_id('fineui_32')
+            browser.find_element_by_id('fineui_39')
         except exceptions.NoSuchElementException:
             print('[Info] Waiting: ' + str(i * 3) +
                   ' / ' + str(config.timeout) + ' seconds')
@@ -128,7 +131,7 @@ def report(user_index):
         break
 
     try:
-        browser.find_element_by_id('fineui_32')
+        browser.find_element_by_id('fineui_39')
     except exceptions.NoSuchElementException:
         print('[Error] Submit timeout')
         if config.users[user_index]['use_wechat']:
@@ -138,9 +141,9 @@ def report(user_index):
 
     print('[Info] Reported successfully')
 
-    yes_button_2 = browser.find_element_by_id('fineui_32') \
-        .find_element_by_id('fineui_34') \
-        .find_element_by_id('fineui_35')
+    yes_button_2 = browser.find_element_by_id('fineui_39') \
+        .find_element_by_id('fineui_41') \
+        .find_element_by_id('fineui_42')
     yes_button_2.click()
     time.sleep(1)
 
