@@ -21,5 +21,5 @@ users = [
         'password': '654321',
         'use_wechat': False,
         'uid': None
-    },
+    }
 ]

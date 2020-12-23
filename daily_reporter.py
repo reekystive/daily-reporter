@@ -11,6 +11,7 @@ import re
 
 
 def send_wechat(user_index, msg):
+    """Send messeage to WeChat"""
     wechat_url = 'http://wxpusher.zjiecode.com/api/send/message/'
     wechat_url += '?appToken=' + config.app_token
     wechat_url += '&content=' + msg
@@ -19,6 +20,7 @@ def send_wechat(user_index, msg):
 
 
 def report(user_index):
+    """Report for one user"""
     print('[Info] ' + 'Reporting for user ' + str(user_index + 1), end=', ')
     print('username: ' + config.users[user_index]['username'])
 
@@ -39,6 +41,7 @@ def report(user_index):
 
     browser.set_window_size(480, 720)
 
+    # Login
     print('[Info] Logging in')
     browser.get('https://id.sspu.edu.cn/cas/login')
     time.sleep(1)
@@ -53,6 +56,7 @@ def report(user_index):
     login_button.click()
     time.sleep(1)
 
+    # Detect login status
     try:
         browser.find_element_by_class_name('success')
     except exceptions.NoSuchElementException:
@@ -65,44 +69,55 @@ def report(user_index):
     print('[Info] Login success')
     time.sleep(0.5)
 
+    # Jump to HSM page
     print('[Info] Jumping to HSM page')
     browser.get('https://hsm.sspu.edu.cn/selfreport/Default.aspx')
     time.sleep(0.5)
+
+    # Jump to Daily Report page
     print('[Info] Jumping to Daily Report page')
     browser.get('https://hsm.sspu.edu.cn/selfreport/DayReport.aspx')
     time.sleep(1)
 
+    # Start filling
     print('[Info] Starting auto fill')
 
     min_value = int(config.min_temperature * 10)
     max_value = int(config.max_temperature * 10)
 
+    # Generate temperature using normal distribution
     loc = int((min_value + max_value) / 2)
     scale = max_value - loc
     temperature = int(normal(loc=loc, scale=scale)) / 10
-
     if int(temperature * 10) < min_value or int(temperature * 10) > max_value:
         temperature = randint(min_value, max_value) / 10
 
     print('[Info] Auto generated temperature:', temperature)
+
+    # Fill temperature
     temperature_box = browser.find_element_by_id('p1_TiWen-inputEl')
     temperature_box.clear()
     temperature_box.send_keys(str(temperature))
     time.sleep(0.5)
 
+    # Check checkbox
     agree_box = browser.find_element_by_id('p1_ChengNuo-inputEl-icon')
     agree_box.click()
     time.sleep(0.5)
 
-    condition_good = browser.find_element_by_id('fineui_2-inputEl-icon')
+    # Check checkbox
+    condition_good = browser.find_element_by_id('p1_DangQSTZK') \
+        .find_element_by_id('fineui_2-inputEl-icon')
     condition_good.click()
     time.sleep(0.5)
 
+    # Submit
     submit_button = browser.find_element_by_id('p1_ctl00') \
         .find_element_by_id('p1_ctl00_btnSubmit')
     submit_button.click()
     time.sleep(1)
 
+    # Detect submit status
     try:
         browser.find_element_by_id('fineui_27')
     except IndexError:
@@ -112,15 +127,18 @@ def report(user_index):
         browser.quit()
         return 1
 
-    yes_button_1 = browser.find_element_by_id('fineui_27') \
-        .find_element_by_id('fineui_30')
+    # Confirm submit
+    yes_button_1 = browser.find_element_by_id('fineui_34') \
+        .find_element_by_id('fineui_36') \
+        .find_element_by_id('fineui_37')
     yes_button_1.click()
     time.sleep(1)
 
+    # Waiting for submit result
     for i in range(int(config.timeout / 3)):
         time.sleep(3)
         try:
-            browser.find_element_by_id('fineui_32')
+            browser.find_element_by_id('fineui_39')
         except exceptions.NoSuchElementException:
             print('[Info] Waiting: ' + str(i * 3) +
                   ' / ' + str(config.timeout) + ' seconds')
@@ -128,7 +146,7 @@ def report(user_index):
         break
 
     try:
-        browser.find_element_by_id('fineui_32')
+        browser.find_element_by_id('fineui_39')
     except exceptions.NoSuchElementException:
         print('[Error] Submit timeout')
         if config.users[user_index]['use_wechat']:
@@ -138,19 +156,23 @@ def report(user_index):
 
     print('[Info] Reported successfully')
 
-    yes_button_2 = browser.find_element_by_id('fineui_32') \
-        .find_element_by_id('fineui_34') \
-        .find_element_by_id('fineui_35')
+    # Confirm the success message
+    yes_button_2 = browser.find_element_by_id('fineui_39') \
+        .find_element_by_id('fineui_41') \
+        .find_element_by_id('fineui_42')
     yes_button_2.click()
     time.sleep(1)
 
+    # Check rank
     browser.get('https://hsm.sspu.edu.cn/selfreport/ReportHistory.aspx')
     time.sleep(1)
 
+    # Get rank data text
     txt = browser.find_element_by_id('Panel1_DataList1') \
         .find_element_by_class_name('f-datalist-list') \
         .find_elements_by_class_name('f-datalist-item-inner')[0].text
 
+    # Check whether report is successful
     if txt.find(strings.msg['success_msg']) == -1:
         print('[Error] Check failed')
         if config.users[user_index]['use_wechat']:
@@ -158,6 +180,7 @@ def report(user_index):
         browser.quit()
         return 1
 
+    # Get rank data
     if re.match(r'^(\d+)-(\d+)-(\d+)\(.*?(\d+).*?\)$', txt) != None:
         datas = re.match(r'^(\d+)-(\d+)-(\d+)\(.*?(\d+).*?\)$', txt)
         rank = int(datas.group(4))

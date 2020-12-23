@@ -4,6 +4,8 @@ Auto daily reporter for SSPU HSM
 
 Support WeChat push, multi-user, scheduled auto report
 
+[English](README.md) | [中文](README_zh-cn.md)
+
 ## Quick Start
 
 - Install `Python 3.*`
@@ -15,7 +17,7 @@ Support WeChat push, multi-user, scheduled auto report
   - Download `Chrome WebDriver` and add it to `Path`
 - Edit `config.py`
   - Edit `driver_path` (optional)
-  - Edit `min_temperature` and `min_temperature` (optional)
+  - Edit `min_temperature` and `max_temperature` (optional)
   - Edit `timeout` (optional)
   - Edit `app_token` (get from [WxPusher](https://wxpusher.zjiecode.com/)) (optional)
   - Edit `users`
