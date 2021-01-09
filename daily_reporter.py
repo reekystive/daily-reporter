@@ -185,7 +185,7 @@ def report(user_index):
         datas = re.match(r'^(\d+)-(\d+)-(\d+)\(.*?(\d+).*?\)$', txt)
         rank = int(datas.group(4))
     else:
-        print('[Warring] Check rank failed')
+        print('[Warning] Check rank failed')
         datas = re.match(r'^(\d+)-(\d+)-(\d+)\(.*?\)$', txt)
         rank = None
 
