@@ -27,7 +27,7 @@
 ## 安装 pip 依赖
 
 ``` bash
-pip install numpy selenium schedule requests
+pip install selenium schedule requests
 ```
 
 ## 编辑配置文件

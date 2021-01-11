@@ -2,7 +2,7 @@ from selenium import webdriver
 from selenium.common import exceptions
 from selenium.webdriver.chrome import options
 from random import randint
-from numpy.random import normal
+from random import normalvariate
 import requests
 import time
 import config
@@ -88,7 +88,7 @@ def report(user_index):
     # Generate temperature using normal distribution
     loc = int((min_value + max_value) / 2)
     scale = max_value - loc
-    temperature = int(normal(loc=loc, scale=scale)) / 10
+    temperature = int(normalvariate(loc, scale))
     if int(temperature * 10) < min_value or int(temperature * 10) > max_value:
         temperature = randint(min_value, max_value) / 10
 

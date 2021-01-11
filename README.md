@@ -9,7 +9,6 @@ Support WeChat push, multi-user, scheduled auto report
 ## Quick Start
 
 - Install `Python 3.*`
-  - Install `numpy`
   - Install `selenium`
   - Install `schedule`
   - Install `requests`
