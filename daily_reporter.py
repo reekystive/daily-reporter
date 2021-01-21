@@ -28,6 +28,8 @@ def report(user_index):
     print('[Info]', 'Now:', time.asctime(today))
 
     chrome_options = options.Options()
+    if config.browser_path != 'auto':
+        chrome_options.binary_location = config.browser_path
     if config.headless:
         chrome_options.add_argument('--headless')
         chrome_options.add_argument('--disable-gpu')
