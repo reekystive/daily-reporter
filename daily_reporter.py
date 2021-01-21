@@ -100,15 +100,35 @@ def report(user_index):
     temperature_box.send_keys(str(temperature))
     time.sleep(0.5)
 
-    # Check checkbox
-    agree_box = browser.find_element_by_id('p1_ChengNuo-inputEl-icon')
-    agree_box.click()
-    time.sleep(0.5)
-
-    # Check checkbox
+    # Health Condition
     condition_good = browser.find_element_by_id('p1_DangQSTZK') \
         .find_element_by_id('fineui_2-inputEl-icon')
     condition_good.click()
+    time.sleep(0.5)
+
+    # Dangerous Area
+    dangerous_area = browser.find_element_by_id('p1_CengFWH') \
+        .find_element_by_id('fineui_13-inputEl-icon')
+    dangerous_area.click()
+    time.sleep(0.5)
+
+    # Dangerous People
+    dangerous_people = browser.find_element_by_id('p1_JieChu') \
+        .find_element_by_id('fineui_15-inputEl-icon')
+    dangerous_people.click()
+    time.sleep(0.5)
+
+    # In Shanghai
+    in_shanghai = browser.find_element_by_id('p1_Shanghai') \
+        .find_element_by_class_name('f-field-body-cell') \
+        .find_element_by_class_name('f-field-checkbox-switch')
+    in_shanghai.click()
+    time.sleep(0.5)
+
+    # Check Address
+    check_address = browser.find_element_by_id('p1_CheckAddress') \
+        .find_element_by_id('p1_CheckAddress-inputEl-icon')
+    check_address.click()
     time.sleep(0.5)
 
     # Submit
@@ -119,7 +139,7 @@ def report(user_index):
 
     # Detect submit status
     try:
-        browser.find_element_by_id('fineui_27')
+        browser.find_element_by_id('fineui_36')
     except IndexError:
         print('[Error] Submit failed')
         if config.users[user_index]['use_wechat']:
@@ -128,9 +148,9 @@ def report(user_index):
         return 1
 
     # Confirm submit
-    yes_button_1 = browser.find_element_by_id('fineui_34') \
-        .find_element_by_id('fineui_36') \
-        .find_element_by_id('fineui_37')
+    yes_button_1 = browser.find_element_by_id('fineui_36') \
+        .find_element_by_id('fineui_38') \
+        .find_element_by_id('fineui_39')
     yes_button_1.click()
     time.sleep(1)
 
@@ -138,7 +158,7 @@ def report(user_index):
     for i in range(int(config.timeout / 3)):
         time.sleep(3)
         try:
-            browser.find_element_by_id('fineui_39')
+            browser.find_element_by_id('fineui_41')
         except exceptions.NoSuchElementException:
             print('[Info] Waiting: ' + str(i * 3) +
                   ' / ' + str(config.timeout) + ' seconds')
@@ -146,7 +166,7 @@ def report(user_index):
         break
 
     try:
-        browser.find_element_by_id('fineui_39')
+        browser.find_element_by_id('fineui_41')
     except exceptions.NoSuchElementException:
         print('[Error] Submit timeout')
         if config.users[user_index]['use_wechat']:
@@ -157,9 +177,9 @@ def report(user_index):
     print('[Info] Reported successfully')
 
     # Confirm the success message
-    yes_button_2 = browser.find_element_by_id('fineui_39') \
-        .find_element_by_id('fineui_41') \
-        .find_element_by_id('fineui_42')
+    yes_button_2 = browser.find_element_by_id('fineui_41') \
+        .find_element_by_id('fineui_43') \
+        .find_element_by_id('fineui_44')
     yes_button_2.click()
     time.sleep(1)
 
