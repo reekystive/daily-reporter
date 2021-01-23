@@ -1,5 +1,6 @@
 import time
 import schedule
+import config
 import daily_reporter as reporter
 
 
@@ -10,8 +11,8 @@ def job():
     print('[Info] [Scheduler] Scheduled job done')
 
 
-schedule.every().day.at('00:30').do(job)
-schedule.every().day.at('07:30').do(job)
+for item in config.report_times:
+    schedule.every().day.at(item).do(job)
 
 print('[Info] [Scheduler] Started scheduler')
 

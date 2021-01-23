@@ -11,6 +11,11 @@ headless = False
 app_token = 'AT_ABCDEF0123456789abcdef0123456789'
 # app_token = None if do not use WeChat push
 
+report_times = [
+    '00:30',
+    '07:30'
+]
+
 users = [
     {
         'username': '20201234567',
