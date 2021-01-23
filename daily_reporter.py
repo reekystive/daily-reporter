@@ -61,7 +61,8 @@ def report(user_index, try_times):
     except exceptions.NoSuchElementException:
         print('[Error] Login failed')
         if config.users[user_index]['use_wechat']:
-            send_wechat(user_index, strings.get_msg_failed(user_index))
+            if try_times == config.retry_times:
+                send_wechat(user_index, strings.get_msg_failed(user_index, try_times))
         browser.quit()
         return 1
 
@@ -142,7 +143,8 @@ def report(user_index, try_times):
     except IndexError:
         print('[Error] Submit failed')
         if config.users[user_index]['use_wechat']:
-            send_wechat(user_index, strings.get_msg_failed(user_index))
+            if try_times == config.retry_times:
+                send_wechat(user_index, strings.get_msg_failed(user_index, try_times))
         browser.quit()
         return 1
 
@@ -169,7 +171,8 @@ def report(user_index, try_times):
     except exceptions.NoSuchElementException:
         print('[Error] Submit timeout')
         if config.users[user_index]['use_wechat']:
-            send_wechat(user_index, strings.get_msg_failed(user_index))
+            if try_times == config.retry_times:
+                send_wechat(user_index, strings.get_msg_failed(user_index, try_times))
         browser.quit()
         return 1
 
@@ -196,7 +199,7 @@ def report(user_index, try_times):
         print('[Error] Check failed')
         if config.users[user_index]['use_wechat']:
             if try_times == config.retry_times:
-                send_wechat(user_index, strings.get_msg_failed(user_index))
+                send_wechat(user_index, strings.get_msg_failed(user_index, try_times))
         browser.quit()
         return 1
 
@@ -214,7 +217,7 @@ def report(user_index, try_times):
     print('[Info] ' + 'Date: ' + date + ', Rank: ' + str(rank))
     if config.users[user_index]['use_wechat']:
         send_wechat(user_index, strings.get_msg_success(
-            user_index, date, rank, temperature))
+            user_index, date, rank, temperature, try_times))
     time.sleep(1)
 
     browser.quit()
