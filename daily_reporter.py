@@ -119,11 +119,12 @@ def report(user_index, try_times):
     time.sleep(0.5)
 
     # In Shanghai
-    in_shanghai = browser.find_element_by_id('p1_Shanghai') \
-        .find_element_by_class_name('f-field-body-cell') \
-        .find_element_by_class_name('f-field-checkbox-switch')
-    in_shanghai.click()
-    time.sleep(0.5)
+    if config.users[user_index]['in_shanghai']:
+        in_shanghai = browser.find_element_by_id('p1_Shanghai') \
+            .find_element_by_class_name('f-field-body-cell') \
+            .find_element_by_class_name('f-field-checkbox-switch')
+        in_shanghai.click()
+        time.sleep(0.5)
 
     # Check Address
     check_address = browser.find_element_by_id('p1_CheckAddress') \

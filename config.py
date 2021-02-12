@@ -21,12 +21,14 @@ users = [
         'username': '20201234567',
         'password': '123456',
         'use_wechat': True,
-        'uid': 'UID_ABCDEF0123456789abcdef012345'
+        'uid': 'UID_ABCDEF0123456789abcdef012345',
+        'in_sahnghai': True
     },
     {
         'username': '20201234568',
         'password': '654321',
         'use_wechat': False,
-        'uid': None
+        'uid': None,
+        'in_shanghai': False
     }
 ]
