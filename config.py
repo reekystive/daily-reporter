@@ -22,7 +22,7 @@ users = [
         'password': '123456',
         'use_wechat': True,
         'uid': 'UID_ABCDEF0123456789abcdef012345',
-        'in_sahnghai': True
+        'in_shanghai': True
     },
     {
         'username': '20201234568',
