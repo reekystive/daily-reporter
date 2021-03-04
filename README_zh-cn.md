@@ -8,6 +8,20 @@
 
 [English](README.md) | [中文](README_zh-cn.md)
 
+## 如果你不想折腾
+
+这里有为 Windows 打包好的版本，开箱即用。
+
+[reporter-win.7z](https://github.com/ReekyStive/daily-reporter/releases/download/v1.3/reporter-win.7z)
+
+其中包含
+
+- 本项目源代码
+- Chrome
+- ChromeDriver
+- Python 解释器
+- 依赖包
+
 ## 安装 Google Chrome
 
 使用这个自动报送工具之前，你需要安装 [Google Chrome](https://www.google.com/chrome/)。
