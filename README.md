@@ -8,7 +8,7 @@ Support WeChat push, multi-user, scheduled auto report
 
 ## Quick Start
 
-This is the read-to-use version for Windows: [reporter-win.7z](https://github.com/ReekyStive/daily-reporter/releases/download/v1.3/reporter-win.7z)
+This is the read-to-use version for Windows: [reporter-win.7z](https://github.com/ReekyStive/daily-reporter/releases/download/v1.4/reporter-win.7z)
 
 ## Guide
 
