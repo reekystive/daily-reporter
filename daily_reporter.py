@@ -62,7 +62,8 @@ def report(user_index, try_times):
         print('[Error] Login failed')
         if config.users[user_index]['use_wechat']:
             if try_times == config.retry_times:
-                send_wechat(user_index, strings.get_msg_failed(user_index, try_times))
+                send_wechat(user_index, strings.get_msg_failed(
+                    user_index, try_times))
         browser.quit()
         return 1
 
@@ -102,20 +103,8 @@ def report(user_index, try_times):
 
     # Health Condition
     condition_good = browser.find_element_by_id('p1_DangQSTZK') \
-        .find_element_by_id('fineui_2-inputEl-icon')
+        .find_element_by_xpath("//*[contains(text(), 'Good')]")
     condition_good.click()
-    time.sleep(0.5)
-
-    # Dangerous Area
-    dangerous_area = browser.find_element_by_id('p1_CengFWH') \
-        .find_element_by_id('fineui_13-inputEl-icon')
-    dangerous_area.click()
-    time.sleep(0.5)
-
-    # Dangerous People
-    dangerous_people = browser.find_element_by_id('p1_JieChu') \
-        .find_element_by_id('fineui_15-inputEl-icon')
-    dangerous_people.click()
     time.sleep(0.5)
 
     # In Shanghai
@@ -126,64 +115,44 @@ def report(user_index, try_times):
         in_shanghai.click()
         time.sleep(0.5)
 
-    # Check Address
-    check_address = browser.find_element_by_id('p1_CheckAddress') \
-        .find_element_by_id('p1_CheckAddress-inputEl-icon')
-    check_address.click()
-    time.sleep(0.5)
-
     # Submit
     submit_button = browser.find_element_by_id('p1_ctl00') \
         .find_element_by_id('p1_ctl00_btnSubmit')
     submit_button.click()
     time.sleep(1)
 
-    # Detect submit status
-    try:
-        browser.find_element_by_id('fineui_36')
-    except IndexError:
-        print('[Error] Submit failed')
-        if config.users[user_index]['use_wechat']:
-            if try_times == config.retry_times:
-                send_wechat(user_index, strings.get_msg_failed(user_index, try_times))
-        browser.quit()
-        return 1
-
-    # Confirm submit
-    yes_button_1 = browser.find_element_by_id('fineui_36') \
-        .find_element_by_id('fineui_38') \
-        .find_element_by_id('fineui_39')
-    yes_button_1.click()
-    time.sleep(1)
-
     # Waiting for submit result
     for i in range(int(config.timeout / 3)):
-        time.sleep(3)
         try:
-            browser.find_element_by_id('fineui_41')
+            browser.find_element_by_class_name('f-window') \
+                .find_elements_by_xpath(
+                "//*[contains(text(), 'Submit successfully')]")
         except exceptions.NoSuchElementException:
-            print('[Info] Waiting: ' + str(i * 3) +
+            time.sleep(3)
+            print('[Info] Waiting: ' + str((i + 1) * 3) +
                   ' / ' + str(config.timeout) + ' seconds')
             continue
         break
 
     try:
-        browser.find_element_by_id('fineui_41')
+        browser.find_element_by_class_name('f-window') \
+            .find_elements_by_xpath(
+            "//*[contains(text(), 'Submit successfully')]")
     except exceptions.NoSuchElementException:
         print('[Error] Submit timeout')
         if config.users[user_index]['use_wechat']:
             if try_times == config.retry_times:
-                send_wechat(user_index, strings.get_msg_failed(user_index, try_times))
+                send_wechat(user_index, strings.get_msg_failed(
+                    user_index, try_times))
         browser.quit()
         return 1
 
     print('[Info] Reported successfully')
 
-    # Confirm the success message
-    yes_button_2 = browser.find_element_by_id('fineui_41') \
-        .find_element_by_id('fineui_43') \
-        .find_element_by_id('fineui_44')
-    yes_button_2.click()
+    # Click done
+    done_button = browser.find_element_by_class_name('f-window') \
+        .find_element_by_class_name('f-btn')
+    done_button.click()
     time.sleep(1)
 
     # Check rank
@@ -200,7 +169,8 @@ def report(user_index, try_times):
         print('[Error] Check failed')
         if config.users[user_index]['use_wechat']:
             if try_times == config.retry_times:
-                send_wechat(user_index, strings.get_msg_failed(user_index, try_times))
+                send_wechat(user_index, strings.get_msg_failed(
+                    user_index, try_times))
         browser.quit()
         return 1
 
