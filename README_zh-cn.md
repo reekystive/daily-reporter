@@ -41,7 +41,7 @@
 ## 安装 pip 依赖
 
 ``` bash
-pip install selenium schedule requests
+pip install -r requirements.txt
 ```
 
 ## 编辑配置文件
@@ -66,10 +66,27 @@ users = [
         'username': '20201234567',
         'password': '123456',
         'use_wechat': True,
-        'uid': 'UID_ABCDEF0123456789abcdef012345'
+        'uid': 'UID_ABCDEF0123456789abcdef012345',
+        'vaccination_time': '2021-04-22',
+        'in_shanghai': True
     }
 ]
 ```
+
+#### 配置说明
+
+- `use_wechat`  
+    是否对该用户使用微信推送
+
+- `uid`  
+    [WxPusher](https://wxpusher.zjiecode.com/)
+    的 `uid`，仅在 `use_wechat == True` 时有效
+
+- `vaccination_time`  
+    接种时间
+
+- `in_shanghai`  
+    近两周是否一直在上海
 
 ### 配置微信推送
 
@@ -81,11 +98,13 @@ users = [
 
 ### 更改定时时间
 
-在 `scheduler.py` 中修改
+在 `config.py` 中修改
 
 ``` python
-schedule.every().day.at('00:30').do(job)
-schedule.every().day.at('07:30').do(job)
+report_times = [
+    '00:30',
+    '07:30'
+]
 ```
 
 以自定义报送时间。
