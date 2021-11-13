@@ -1,6 +1,8 @@
 from selenium import webdriver
 from selenium.common import exceptions
 from selenium.webdriver.chrome import options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
 from random import randint
 from random import normalvariate
 import requests
@@ -33,8 +35,9 @@ def report(user_index, try_times):
 
     print('[Info] Launching Browser')
     if (config.driver_path != 'auto'):
+        service = Service(config.driver_path)
         browser = webdriver.Chrome(
-            config.driver_path, options=chrome_options)
+            service=service, options=chrome_options)
     else:
         browser = webdriver.Chrome(options=chrome_options)
 
@@ -45,19 +48,19 @@ def report(user_index, try_times):
     browser.get('https://id.sspu.edu.cn/cas/login')
     time.sleep(1)
 
-    username_box = browser.find_element_by_id('username')
+    username_box = browser.find_element(By.ID, 'username')
     username_box.send_keys(config.users[user_index]['username'])
-    password_box = browser.find_element_by_id('password')
+    password_box = browser.find_element(By.ID, 'password')
     password_box.send_keys(config.users[user_index]['password'])
     time.sleep(0.5)
 
-    login_button = browser.find_element_by_class_name('submit_button')
+    login_button = browser.find_element(By.CLASS_NAME, 'submit_button')
     login_button.click()
     time.sleep(1)
 
     # Detect login status
     try:
-        browser.find_element_by_class_name('success')
+        browser.find_element(By.CLASS_NAME, 'success')
     except exceptions.NoSuchElementException:
         print('[Error] Login failed')
         if config.users[user_index]['use_wechat']:
@@ -96,36 +99,36 @@ def report(user_index, try_times):
     print('[Info] Auto generated temperature:', temperature)
 
     # Fill temperature
-    temperature_box = browser.find_element_by_id('p1_TiWen-inputEl')
+    temperature_box = browser.find_element(By.ID, 'p1_TiWen-inputEl')
     temperature_box.clear()
     temperature_box.send_keys(str(temperature))
     time.sleep(0.5)
 
     # Health Condition
-    condition_good = browser.find_element_by_id('p1_DangQSTZK') \
-        .find_element_by_xpath("//*[contains(text(), 'Good')]")
+    condition_good = browser.find_element(By.ID, 'p1_DangQSTZK') \
+        .find_element(By.XPATH, "//*[contains(text(), 'Good')]")
     condition_good.click()
     time.sleep(0.5)
 
     # In Shanghai
     if config.users[user_index]['in_shanghai']:
-        in_shanghai = browser.find_element_by_id('p1_Shanghai') \
-            .find_element_by_class_name('f-field-body-cell') \
-            .find_element_by_class_name('f-field-checkbox-switch')
+        in_shanghai = browser.find_element(By.ID, 'p1_Shanghai') \
+            .find_element(By.CLASS_NAME, 'f-field-body-cell') \
+            .find_element(By.CLASS_NAME, 'f-field-checkbox-switch')
         in_shanghai.click()
         time.sleep(0.5)
 
     # Submit
-    submit_button = browser.find_element_by_id('p1_ctl00') \
-        .find_element_by_id('p1_ctl00_btnSubmit')
+    submit_button = browser.find_element(By.ID, 'p1_ctl00') \
+        .find_element(By.ID, 'p1_ctl00_btnSubmit')
     submit_button.click()
     time.sleep(1)
 
     # Waiting for submit result
     for i in range(int(config.timeout / 3)):
         try:
-            browser.find_element_by_class_name('f-window') \
-                .find_elements_by_xpath(
+            browser.find_element(By.CLASS_NAME, 'f-window') \
+                .find_elements(By.XPATH, 
                 "//*[contains(text(), 'Submit successfully')]")
         except exceptions.NoSuchElementException:
             time.sleep(3)
@@ -135,8 +138,8 @@ def report(user_index, try_times):
         break
 
     try:
-        browser.find_element_by_class_name('f-window') \
-            .find_elements_by_xpath(
+        browser.find_element(By.CLASS_NAME, 'f-window') \
+            .find_elements(By.XPATH, 
             "//*[contains(text(), 'Submit successfully')]")
     except exceptions.NoSuchElementException:
         print('[Error] Submit timeout')
@@ -150,8 +153,8 @@ def report(user_index, try_times):
     print('[Info] Reported successfully')
 
     # Click done
-    done_button = browser.find_element_by_class_name('f-window') \
-        .find_element_by_class_name('f-btn')
+    done_button = browser.find_element(By.CLASS_NAME, 'f-window') \
+        .find_element(By.CLASS_NAME, 'f-btn')
     done_button.click()
     time.sleep(1)
 
@@ -160,9 +163,9 @@ def report(user_index, try_times):
     time.sleep(1)
 
     # Get rank data text
-    txt = browser.find_element_by_id('Panel1_DataList1') \
-        .find_element_by_class_name('f-datalist-list') \
-        .find_elements_by_class_name('f-datalist-item-inner')[0].text
+    txt = browser.find_element(By.ID, 'Panel1_DataList1') \
+        .find_element(By.CLASS_NAME, 'f-datalist-list') \
+        .find_elements(By.CLASS_NAME, 'f-datalist-item-inner')[0].text
 
     # Check whether report is successful
     if txt.find(strings.msg['success_msg']) == -1:
