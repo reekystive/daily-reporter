@@ -22,6 +22,7 @@ users = [
         'password': '123456',
         'use_wechat': True,
         'uid': 'UID_ABCDEF0123456789abcdef012345',
+        'vaccination_time': '2021-04-22',
         'in_shanghai': True
     },
     {
@@ -29,6 +30,7 @@ users = [
         'password': '654321',
         'use_wechat': False,
         'uid': None,
+        'vaccination_time': '2021-04-22',
         'in_shanghai': False
     }
 ]

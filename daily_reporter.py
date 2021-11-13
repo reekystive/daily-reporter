@@ -118,6 +118,12 @@ def report(user_index, try_times):
         in_shanghai.click()
         time.sleep(0.5)
 
+    # Vaccination Time
+    script = "document.getElementById('p1_JieZSJ-inputEl').value = " + \
+        "'" + config.users[user_index]['vaccination_time'].strip() + "'"
+    browser.execute_script(script)
+    time.sleep(0.5)
+
     # Submit
     submit_button = browser.find_element(By.ID, 'p1_ctl00') \
         .find_element(By.ID, 'p1_ctl00_btnSubmit')
@@ -128,8 +134,8 @@ def report(user_index, try_times):
     for i in range(int(config.timeout / 3)):
         try:
             browser.find_element(By.CLASS_NAME, 'f-window') \
-                .find_elements(By.XPATH, 
-                "//*[contains(text(), 'Submit successfully')]")
+                .find_elements(By.XPATH,
+                               "//*[contains(text(), 'Submit successfully')]")
         except exceptions.NoSuchElementException:
             time.sleep(3)
             print('[Info] Waiting: ' + str((i + 1) * 3) +
@@ -139,8 +145,8 @@ def report(user_index, try_times):
 
     try:
         browser.find_element(By.CLASS_NAME, 'f-window') \
-            .find_elements(By.XPATH, 
-            "//*[contains(text(), 'Submit successfully')]")
+            .find_elements(By.XPATH,
+                           "//*[contains(text(), 'Submit successfully')]")
     except exceptions.NoSuchElementException:
         print('[Error] Submit timeout')
         if config.users[user_index]['use_wechat']:
