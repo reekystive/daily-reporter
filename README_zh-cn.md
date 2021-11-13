@@ -14,7 +14,7 @@
 
 这里有为 Windows 打包好的版本，开箱即用。
 
-[reporter-win.7z](https://github.com/ReekyStive/daily-reporter/releases/download/v1.4/reporter-win.7z)
+[reporter-win32.7z](https://github.com/ReekyStive/daily-reporter/releases/download/v1.5/reporter-win32.7z)
 
 其中包含
 

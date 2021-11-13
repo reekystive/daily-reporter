@@ -10,7 +10,7 @@ Support Google Chrome, Firefox, Microsoft Edge
 
 ## Quick Start
 
-This is the ready-to-use version for Windows: [reporter-win.7z](https://github.com/ReekyStive/daily-reporter/releases/download/v1.4/reporter-win.7z)
+This is the ready-to-use version for Windows: [reporter-win32.7z](https://github.com/ReekyStive/daily-reporter/releases/download/v1.5/reporter-win32.7z)
 
 ## Guide
 
