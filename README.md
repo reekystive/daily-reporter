@@ -4,6 +4,8 @@ Auto daily reporter for SSPU HSM
 
 Support WeChat push, multi-user, scheduled auto report
 
+Support Google Chrome, Firefox, Microsoft Edge
+
 [English](README.md) | [中文](README_zh-cn.md)
 
 ## Quick Start

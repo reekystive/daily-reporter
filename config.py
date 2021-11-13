@@ -4,12 +4,15 @@ max_temperature = 36.9
 timeout = 120
 retry_times = 20
 
+browser_type = 'chrome'
+# support: chrome edge firefox
+
 driver_path = 'auto'
 browser_path = 'auto'
 headless = False
 
 app_token = 'AT_ABCDEF0123456789abcdef0123456789'
-# app_token = None if do not use WeChat push
+# app_token = None, if do not use WeChat push
 
 report_times = [
     '00:30',

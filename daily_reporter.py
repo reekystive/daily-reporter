@@ -1,8 +1,5 @@
-from selenium import webdriver
 from selenium.common import exceptions
-from selenium.webdriver.chrome import options
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
 from random import randint
 from random import normalvariate
 import requests
@@ -10,6 +7,29 @@ import time
 import config
 import strings
 import re
+
+
+def import_browser(browser_type: str):
+    global options, Service, Browser
+    if browser_type == 'chrome':
+        print('[Info]', 'Using browser: Chrome')
+        from selenium.webdriver.chrome import options
+        from selenium.webdriver.chrome.service import Service
+        from selenium.webdriver import Chrome as Browser
+    elif browser_type == 'firefox':
+        print('[Info]', 'Using browser: Firefox')
+        from selenium.webdriver.firefox import options
+        from selenium.webdriver.firefox.service import Service
+        from selenium.webdriver import Firefox as Browser
+    elif browser_type == 'edge':
+        print('[Info]', 'Using browser: Edge')
+        from selenium.webdriver.edge import options
+        from selenium.webdriver.edge.service import Service
+        from selenium.webdriver import Edge as Browser
+    else:
+        print('[Error] Unsupported browser type')
+        print('[Error] Stopping')
+        exit(1)
 
 
 def send_wechat(user_index, msg):
@@ -26,20 +46,19 @@ def report(user_index, try_times):
     today = time.localtime(time.time())
     print('[Info]', 'Now:', time.asctime(today))
 
-    chrome_options = options.Options()
+    browser_options = options.Options()
     if config.browser_path != 'auto':
-        chrome_options.binary_location = config.browser_path
+        browser_options.binary_location = config.browser_path
     if config.headless:
-        chrome_options.add_argument('--headless')
-        chrome_options.add_argument('--disable-gpu')
+        browser_options.add_argument('--headless')
+        browser_options.add_argument('--disable-gpu')
 
     print('[Info] Launching Browser')
     if (config.driver_path != 'auto'):
         service = Service(config.driver_path)
-        browser = webdriver.Chrome(
-            service=service, options=chrome_options)
+        browser = Browser(service=service, options=browser_options)
     else:
-        browser = webdriver.Chrome(options=chrome_options)
+        browser = Browser(options=browser_options)
 
     browser.set_window_size(480, 720)
 
@@ -207,6 +226,8 @@ def report(user_index, try_times):
 
 def run():
     print('[Info] Task started\n')
+    import_browser(config.browser_type)
+    print()
 
     for user_index in range(len(config.users)):
         print('[Info] Reporting for user ' + str(user_index + 1), end=', ')

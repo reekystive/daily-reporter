@@ -4,6 +4,8 @@
 
 支持**微信推送报送结果**、**多用户**、**定时自动报送**
 
+支持 Google Chrome, Firefox, Microsoft Edge
+
 体温在用户定义的区间内使用正态分布随机生成。
 
 [English](README.md) | [中文](README_zh-cn.md)
@@ -31,6 +33,18 @@
 在 Google Chrome 中进入 `chrome://version` 查看 Google Chrome 版本，并下载对应版本的 [ChromeDriver](https://chromedriver.chromium.org/downloads)。
 
 下载 ChromeDriver 后，你需要将可执行文件所在的目录加入 `PATH` 环境变量中。你也可以跳过此步，但如果跳过此步，你需要将 ChromeDriver 可执行文件的路径写入 `config.py` 中。
+
+## 如果你不使用 Google Chrome
+
+除 Google Chrome 外，本工具也支持 Firefox 和 Microsoft Edge。你只需要安装相应版本的 `msedgedriver` (适用于 Microsoft Edge) 或 `geckodriver` (适用于 Firefox)，并把 `config.py` 中的 `browser_type` 修改为相应的浏览器即可。
+
+`browser_type` 可选项：
+
+- `chrome`
+- `firefox`
+- `edge`
+
+如果有必要，你还可以手动指定 `driver_path` 和 `browser_path`。
 
 ## 安装 Python
 
