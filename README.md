@@ -8,6 +8,8 @@ Support Google Chrome, Firefox, Microsoft Edge
 
 [English](README.md) | [中文](README_zh-cn.md)
 
+**Click Chinese above for more detailed instructions**
+
 ## Quick Start
 
 This is the ready-to-use version for Windows: [reporter-win32.7z](https://github.com/ReekyStive/daily-reporter/releases/download/v1.5/reporter-win32.7z)
